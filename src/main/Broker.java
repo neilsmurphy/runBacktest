@@ -2,7 +2,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 
 public class Broker {
-    private int barCount;
+    private int index;
     private double cash;
     private double value;
     public boolean printout;
@@ -21,7 +21,7 @@ public class Broker {
     }
 
     public void setBarCount(int i) {
-        barCount = i;
+        index = i;
     }
 
     public double getCash() {
@@ -43,7 +43,9 @@ public class Broker {
     }
 
     // Adjust market value, minus to reduc.
-    public void adjValue(double increment) { this.value += increment; }
+    public void adjValue(double increment) {
+        this.value += increment;
+    }
 
 
 

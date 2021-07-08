@@ -3,29 +3,32 @@ import java.io.File;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
-public class Feeds {
-    List<TradeData> ohlcv = new ArrayList<TradeData>();
+public class Feed {
     String name;
     String symbol = "AAPL";
-    String dir =  "/data/";
+    String dir =  "data/";
+    int index = 0;
+    TradeData data;
 
-    public Feeds() {}
+    public Feed() {
+        data = addTradeData();
+    }
 
-    public Feeds(String n, String s) {
+    public Feed(String n, String s) {
         name = n;
         symbol = s;
+        data = addTradeData();
     }
 
     public TradeData addTradeData () {
 
-        String filePath= new File("data/" + symbol + ".csv").getAbsolutePath();
+        String filePath= new File(dir + symbol + ".csv").getAbsolutePath();
         File file = new File(filePath);
 
         // this gives you a 2-dimensional array of strings
@@ -66,7 +69,11 @@ public class Feeds {
             td.close[i] = Double.parseDouble(bars.get(i).get(4));
             td.volume[i] = Integer.parseInt(bars.get(i).get(5));
         }
-        ohlcv.add(td);
+
         return td;
+    }
+
+    public void setIndex (int i) {
+        index = i;
     }
 }

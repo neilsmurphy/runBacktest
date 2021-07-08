@@ -1,1 +1,8 @@
-/src/main/data
+# Ignore ohlcv data
+src/main/data/
+
+*.class
+src/main/*.class
+
+target/
+.idea/

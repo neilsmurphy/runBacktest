@@ -1,8 +1,9 @@
+import java.util.List;
 
-
-class Strategy {
-    public Broker broker:
-    private int barCount;
+public class Strategy {
+    public Broker broker;
+    public List<Feed> feeds;
+    private int index = 0;
     int quantity = 0;
     int order_size = 100;
     Order buyOrder = null;
@@ -12,18 +13,21 @@ class Strategy {
     double trailing_stop = 0.0;
     double trailing_stop_pct = 0.02;
 
-    }
-
-    Strategy (Broker b) {
+    public Strategy (Broker b, List<Feed> f) {
         broker = b;
+        feeds = f;
     }
 
-    public int void setBarCount(int i) {
-        barCount = i;
+    public void setIndex(int i) {
+        index = i;
     }
 
-    public int void runStrategy (int i) {
-        System.out.println("From Strategy: %d", i);
+    public void runStrategy () {
+         for (Feed feed : feeds) {
+             TradeData data = feed.data;
+                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
+         }
+
 
 //        setBarCount = i;
 //        if (i < sma_period) {
@@ -84,9 +88,9 @@ class Strategy {
 //        }
     }
 
-    public Order createOrder(double price, double orderSize, String side) {
-        order = new Order(i, price, orderSize, side);
-        orders.add(order);
-        return order;
-    }
+//    public Order createOrder(double price, double orderSize, String side) {
+//        order = new Order(i, price, orderSize, side);
+//        orders.add(order);
+//        return order;
+//    }
 }
