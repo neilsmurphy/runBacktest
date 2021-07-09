@@ -23,7 +23,8 @@ public class Strategy {
 
     public void runStrategy () {
         for (Feed feed : feeds) {
-            buyOrder = createOrder(index, feed.data, "market", 10, Side.BUY);
+            buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
+            submitOrder(broker, buyOrder);
             System.out.println(buyOrder.orderId);
 //             TradeData data = feed.data;
 //                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
@@ -89,7 +90,8 @@ public class Strategy {
 //        }
     }
 
-    public Order createOrder(int index, TradeData feed, String oType, double orderSize, Side side) {
+    public Order createOrder(int index, TradeData feed, OrderType oType, double orderSize,
+                             Side side) {
         Order order = new Order(index, feed, oType, orderSize, side);
         return order;
     }

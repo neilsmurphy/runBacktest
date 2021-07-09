@@ -48,7 +48,7 @@ public class Broker {
     }
 
     public void receiveOrder(Order order) {
-        order.setStatus(order.status.ACCEPTED);
+        order.setStatus(Status.ACCEPTED);
     }
 
     public void executeOrders(int i) {

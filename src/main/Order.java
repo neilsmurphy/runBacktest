@@ -2,7 +2,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 enum Status { CREATED, SUBMITTED, ACCEPTED, PARTIAL, COMPLETE, REJECTED, MARGIN, CANCELLED }
 enum Side { BUY, SELL }
-enum OrderType ( MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT)
+enum OrderType { MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT }
 
 public class Order {
     private static final AtomicInteger count = new AtomicInteger(0);

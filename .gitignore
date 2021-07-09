@@ -1,8 +1,15 @@
-# Ignore ohlcv data
 src/main/data/
 
 *.class
 src/main/*.class
 
-target/
+# Intellij
 .idea/
+*.iml
+*.iws
+out/
+artifacts/
+
+# Maven
+log/
+target/
