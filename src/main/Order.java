@@ -1,34 +1,37 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
+enum Status { CREATED, SUBMITTED, ACCEPTED, PARTIAL, COMPLETE, REJECTED, MARGIN, CANCELLED }
+enum Side { BUY, SELL }
+enum OrderType ( MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT)
+
 public class Order {
     private static final AtomicInteger count = new AtomicInteger(0);
     public int orderId;
     public int barCount;
-    public int status;
+    Status status = Status.CREATED;
     public TradeData tradeData;
-    public String orderType; // Market or trailing
+    public OrderType orderType;
     public double quantity;
-    public String side;
+    public Side side;
     public double price;
     public double limit;
     public double trailingPercent;
     public double trailingAmount;
 //    public double price; use market for now.
 
-    Order (int i, TradeData td, String oType, double qty, String sd) {
+
+    Order (int i, TradeData td, OrderType oType, double qty, Side sd) {
         orderId = count.incrementAndGet();
         barCount = i;
-        status = 0;
         tradeData = td;
         orderType = oType;
         quantity = qty;
         side = sd;
     }
 
-    Order (int i, TradeData td, String oType, double qty, String sd, double tp) {
+    Order (int i, TradeData td, OrderType oType, double qty, Side sd, double tp) {
         orderId = count.incrementAndGet();
         barCount = i;
-        status = 0;
         tradeData = td;
         orderType = oType;
         quantity = qty;
@@ -39,11 +42,11 @@ public class Order {
 
 
 
-    public int getStatus () {
+    public Status getStatus () {
         return status;
     }
 
-    public void setStatus (int st) {
+    public void setStatus (Status st) {
         status = st;
     }
 
@@ -51,7 +54,7 @@ public class Order {
         return tradeData;
     }
 
-    public String getSide() {
+    public Side getSide() {
         return side;
     }
 

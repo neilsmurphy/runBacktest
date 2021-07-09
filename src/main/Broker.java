@@ -47,13 +47,15 @@ public class Broker {
         this.value += increment;
     }
 
-
+    public void receiveOrder(Order order) {
+        order.setStatus(order.status.ACCEPTED);
+    }
 
     public void executeOrders(int i) {
         for (Order order: getOpenOrders()) {
-            if (order.getSide() == "buy") {
+            if (order.getSide() == order.side.BUY) {
                 cash -= order.getQuantity() * order.getTradeData().close[i];
-                order.setStatus(1);
+                order.setStatus(Status.COMPLETE);
                 if (printout == true) {
                     System.out.printf("Date: %s  Buy: quantity %d, price %5.2f\n",
                             order.tradeData.date[i], order.getQuantity(),
@@ -61,7 +63,7 @@ public class Broker {
                 }
             } else {
                 cash += order.getQuantity() * order.getTradeData().close[i];
-                order.setStatus(1);
+                order.setStatus(Status.COMPLETE);
                 if (printout == true) {
                     System.out.printf("Date: %s  Close: quantity %d, price %5.2f\n",
                             order.getTradeData().date[i], order.getQuantity(),
@@ -74,7 +76,7 @@ public class Broker {
     public Deque<Order> getOpenOrders () {
         Deque<Order> openOrders = new LinkedList<Order>();
         for (Order order: orders) {
-            if (order.status == 0) {
+            if (order.status.ordinal() < 4) {
                 openOrders.add(order);
             }
         }

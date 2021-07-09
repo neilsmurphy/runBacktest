@@ -7,7 +7,6 @@ public class Strategy {
     int quantity = 0;
     int order_size = 100;
     Order buyOrder = null;
-    boolean order = false;
     double sma = 0;
     int sma_period = 15;
     double trailing_stop = 0.0;
@@ -23,8 +22,10 @@ public class Strategy {
     }
 
     public void runStrategy () {
-         for (Feed feed : feeds) {
-             TradeData data = feed.data;
+        for (Feed feed : feeds) {
+            buyOrder = createOrder(index, feed.data, "market", 10, Side.BUY);
+            System.out.println(buyOrder.orderId);
+//             TradeData data = feed.data;
 //                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
          }
 
@@ -88,9 +89,13 @@ public class Strategy {
 //        }
     }
 
-//    public Order createOrder(double price, double orderSize, String side) {
-//        order = new Order(i, price, orderSize, side);
-//        orders.add(order);
-//        return order;
-//    }
+    public Order createOrder(int index, TradeData feed, String oType, double orderSize, Side side) {
+        Order order = new Order(index, feed, oType, orderSize, side);
+        return order;
+    }
+
+    public void submitOrder(Broker bk, Order ord) {
+        ord.setStatus(Status.SUBMITTED);
+        bk.receiveOrder(ord);
+    }
 }
