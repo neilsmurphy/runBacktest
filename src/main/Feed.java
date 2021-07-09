@@ -12,8 +12,9 @@ import java.util.Scanner;
 public class Feed {
     String name;
     String symbol = "AAPL";
-    String dir =  "data/";
+    String dir = "data/";
     int index = 0;
+    String dateFormat="yyyy-MM-dd";
     TradeData data;
 
     public Feed() {
@@ -26,12 +27,18 @@ public class Feed {
         data = addTradeData();
     }
 
-    public TradeData addTradeData () {
+    public Feed(String n, String s, String f) {
+        name = n;
+        symbol = s;
+        dateFormat = f;
+        data = addTradeData();
+    }
 
-        String filePath= new File(dir + symbol + ".csv").getAbsolutePath();
+    public TradeData addTradeData() {
+
+        String filePath = new File(dir + symbol + ".csv").getAbsolutePath();
         File file = new File(filePath);
 
-        // this gives you a 2-dimensional array of strings
         List<List<String>> bars = new ArrayList<>();
         Scanner inputStream;
 
@@ -39,9 +46,8 @@ public class Feed {
             inputStream = new Scanner(file);
 
             while (inputStream.hasNext()) {
-                String line = inputStream.next();
+                String line = inputStream.nextLine();
                 String[] values = line.split(",");
-                // this adds the currently parsed line to the 2-dimensional string array
                 bars.add(Arrays.asList(values));
             }
 
@@ -53,27 +59,30 @@ public class Feed {
 
         TradeData td = new TradeData(bars.size());
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
         for (int i = 1; i < bars.size(); i++) {
             List<String> line = bars.get(i);
             try {
-                td.date[i] = format.parse(bars.get(i).get(0));
+                td.date[i] = format.parse(line.get(0));
             } catch (ParseException e) {
                 System.out.printf("Error converting date %s", e);
                 e.printStackTrace();
                 System.exit(1);
             }
-            td.open[i] = Double.parseDouble(bars.get(i).get(1));
-            td.high[i] = Double.parseDouble(bars.get(i).get(2));
-            td.low[i] = Double.parseDouble(bars.get(i).get(3));
-            td.close[i] = Double.parseDouble(bars.get(i).get(4));
-            td.volume[i] = Integer.parseInt(bars.get(i).get(5));
+            td.open[i] = Double.parseDouble(line.get(1));
+            td.high[i] = Double.parseDouble(line.get(2));
+            td.low[i] = Double.parseDouble(line.get(3));
+            td.close[i] = Double.parseDouble(line.get(4));
+            td.volume[i] = Integer.parseInt(line.get(5));
+            if (i < 4) {
+                System.out.printf("%s %5.2f %d%n", td.date[i], td.close[i], td.volume[i]);
+            }
         }
 
         return td;
     }
 
-    public void setIndex (int i) {
+    public void setIndex(int i) {
         index = i;
     }
 }

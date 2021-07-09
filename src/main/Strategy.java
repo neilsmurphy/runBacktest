@@ -25,7 +25,7 @@ public class Strategy {
     public void runStrategy () {
          for (Feed feed : feeds) {
              TradeData data = feed.data;
-                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
+//                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
          }
 
 

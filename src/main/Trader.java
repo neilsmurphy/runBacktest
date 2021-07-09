@@ -12,8 +12,8 @@ public class Trader {
         // Instantiate Classes
         Broker broker = new Broker(20000, true);
         feeds.add(new Feed("Apple Corp.", "AAPL"));
+//        feeds.add(new Feed("Apple Corp.", "dev", "yyyy-MM-dd HH:mm:dd"));
         Strategy strategy = new Strategy(broker, feeds);
-        System.out.println(feeds.get(0).symbol);
 
         // Determine length of data.
         TradeData iter = feeds.get(0).data;

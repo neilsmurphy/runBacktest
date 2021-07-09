@@ -18,6 +18,4 @@ public class TradeData {
         this.close = new double[size];
         this.volume = new int[size];
     }
-
-
 }
