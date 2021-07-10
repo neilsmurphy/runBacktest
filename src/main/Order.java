@@ -1,7 +1,7 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
 enum Status { CREATED, SUBMITTED, ACCEPTED, PARTIAL, COMPLETE, REJECTED, MARGIN, CANCELLED }
-enum Side { BUY, SELL }
+enum Side { BUY, SELL, CLOSE }
 enum OrderType { MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT }
 
 public class Order {
@@ -39,8 +39,6 @@ public class Order {
         trailingPercent = tp;
         trailingAmount = 0;
     }
-
-
 
     public Status getStatus () {
         return status;
