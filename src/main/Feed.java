@@ -74,9 +74,9 @@ public class Feed {
             td.low[i] = Double.parseDouble(line.get(3));
             td.close[i] = Double.parseDouble(line.get(4));
             td.volume[i] = Integer.parseInt(line.get(5));
-            if (i < 4) {
-                System.out.printf("%s %5.2f %d%n", td.date[i], td.close[i], td.volume[i]);
-            }
+//            if (i < 14) {
+//                System.out.printf("%s %5.2f %d%n", td.date[i], td.close[i], td.volume[i]);
+//            }
         }
 
         return td;

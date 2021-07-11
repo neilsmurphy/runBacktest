@@ -7,7 +7,7 @@ enum OrderType { MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT }
 public class Order {
     private static final AtomicInteger count = new AtomicInteger(0);
     public int orderId;
-    public int barCount;
+    public int index;
     Status status = Status.CREATED;
     public TradeData tradeData;
     public OrderType orderType;
@@ -22,7 +22,7 @@ public class Order {
 
     Order (int i, TradeData td, OrderType oType, double qty, Side sd) {
         orderId = count.incrementAndGet();
-        barCount = i;
+        index = i;
         tradeData = td;
         orderType = oType;
         quantity = qty;
@@ -31,7 +31,7 @@ public class Order {
 
     Order (int i, TradeData td, OrderType oType, double qty, Side sd, double tp) {
         orderId = count.incrementAndGet();
-        barCount = i;
+        index = i;
         tradeData = td;
         orderType = oType;
         quantity = qty;

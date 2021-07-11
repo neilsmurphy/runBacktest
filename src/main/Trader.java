@@ -10,25 +10,28 @@ public class Trader {
         List<Feed> feeds = new ArrayList<Feed>();
 
         // Instantiate Classes
-        Broker broker = new Broker(20000, true);
         feeds.add(new Feed("Apple Corp.", "AAPL"));
 //        feeds.add(new Feed("Apple Corp.", "dev", "yyyy-MM-dd HH:mm:dd"));
+        Broker broker = new Broker(20000, feeds, true);
         Strategy strategy = new Strategy(broker, feeds);
 
         // Determine length of data.
-        TradeData iter = feeds.get(0).data;
+        Feed thisFeed = feeds.get(0);
+        TradeData iter = thisFeed.data;
         int iter_length = iter.close.length;
 
         for(int i = 1; i < iter_length; i++) {
             // Pre-Trade
-            broker.setBarCount(i);
+            broker.setIndex(i);
             strategy.setIndex(i);
 
 
             // Trade
             strategy.runStrategy();
-//            System.out.printf("Close: %5.2f %n", feeds.get(0).ohlcv.get(0).close[i]);
-
+            if (i < 15) {
+                System.out.printf("Symbol: %s, Close: %5.2f, Cash: %5.2f, Value: %5.2f %n",
+                        thisFeed.symbol, iter.close[i], broker.getCash(), broker.getValue());
+            }
 
             // Post-Trade
 

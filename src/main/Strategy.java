@@ -6,7 +6,6 @@ public class Strategy {
     private int index = 0;
     int quantity = 0;
     int order_size = 100;
-    Order buyOrder = null;
     double sma = 0;
     int sma_period = 15;
     double trailing_stop = 0.0;
@@ -23,15 +22,24 @@ public class Strategy {
 
     public void runStrategy () {
         for (Feed feed : feeds) {
-            buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
-            submitOrder(broker, buyOrder);
-            System.out.println(buyOrder.orderId);
-//             TradeData data = feed.data;
-//                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
-         }
+
+            if (index == 5) {
+                Order buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
+                submitOrder(broker, buyOrder);
+                System.out.printf("Index: %d, buy id: %d, Cash: %5.2f, Value %5.2f %n", index,
+                        buyOrder.orderId, broker.getCash(), broker.getValue());
+            } else if (index == 8) {
+                Order sellOrder = createOrder(index, feed.data, OrderType.MARKET, 10,
+                        Side.SELL);
+                submitOrder(broker, sellOrder);
+                System.out.printf("Index: %d, sell id: %d, Cash: %5.2f, Value %5.2f %n", index,
+                        sellOrder.orderId, broker.getCash(), broker.getValue());
+            }
+            broker.executeOrders(index);
+        }
 
 
-//        setBarCount = i;
+//        setIndex = i;
 //        if (i < sma_period) {
 //            return;
 //        }
