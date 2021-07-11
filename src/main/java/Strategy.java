@@ -35,7 +35,7 @@ public class Strategy {
                 System.out.printf("Index: %d, sell id: %d, Cash: %5.2f, Value %5.2f %n", index,
                         sellOrder.orderId, broker.getCash(), broker.getValue());
             }
-            broker.executeOrders(index);
+            broker.executeOrders();
         }
 
 
@@ -100,8 +100,7 @@ public class Strategy {
 
     public Order createOrder(int index, TradeData feed, OrderType oType, double orderSize,
                              Side side) {
-        Order order = new Order(index, feed, oType, orderSize, side);
-        return order;
+        return new Order(index, feed, oType, orderSize, side);
     }
 
     public void submitOrder(Broker bk, Order ord) {

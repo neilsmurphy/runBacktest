@@ -4,7 +4,7 @@ import java.util.List;
 
 /**
  * The broker class simulates a real life broker. It is responsible for
- * tracking cash, positions, receving and executing, rejecting orders.
+ * tracking cash, positions, receiving and executing, rejecting orders.
  * The broker class will calculate the value of the portfolio, cash +
  * securities.
  * <p>
@@ -14,46 +14,36 @@ import java.util.List;
  * A notification will be available when on any order events such as partial
  * or fully filled orders rejected orders, etc.
  */
-
-
 public class Broker {
     private int index;
     private double cash;
     private double value;
     public List<Feed> feeds;
     public boolean printout;
-    Deque<Order> orders = new LinkedList<Order>();
-    Deque<Position> portfolio = new LinkedList<Position>();
+    Deque<Order> orders = new LinkedList<>();
+    Deque<Position> portfolio = new LinkedList<>();
 
-
-    Broker (double c, List<Feed> fd, boolean po) {
-        cash = c;
+    Broker (double cash, List<Feed> feeds, boolean printOn) {
+        this.cash = cash;
         value = 0;
-        feeds = fd;
-        printout = po;
+        this.feeds = feeds;
+        this.printout = printOn;
     }
 
-    Broker () {
-        cash = 10000;
-        value = 0;
-        printout = false;
-    }
-
-    public void setIndex(int i) {
-        index = i;
+    /**
+     * Resets the index for every trading cycle.
+     * @param index             Trade iteration index
+     */
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public double getCash() {
-        return cash;
+        return this.cash;
     }
 
     public void adjCash(double increment) {
         this.cash += increment;
-    }
-
-
-    public double getValue() {
-        return value;
     }
 
     public void setValue(double setval) {
@@ -64,59 +54,65 @@ public class Broker {
         this.value += increment;
     }
 
+    public double getValue() {
+        return this.value;
+    }
+
     public void receiveOrder(Order order) {
         order.setStatus(Status.ACCEPTED);
         orders.add(order);
     }
 
-    public void executeOrders(int i) {
+    /**
+     * Manages order execution at the beginning of each trading cycle. This
+     * will execute orders against the previously closed candle.
+     */
+    public void executeOrders() {
         for (Order order: getOpenOrders()) {
+
             Position position;
             if (getPosition(order) != null) {
                 position = getPosition(order);
             } else {
-                position = createPosition(index, order);
+                position = createPosition(order);
                 portfolio.add(position);
             }
 
             int sideFactor;
-            if  (order.getSide() == order.side.BUY) {
+            if  (order.getSide() == Side.BUY) {
                 sideFactor = 1;
-            } else if (order.getSide() == order.side.SELL) {
+            } else if (order.getSide() == Side.SELL) {
                 sideFactor = -1;
             } else {
                 sideFactor = 0;
             }
-            System.out.println(sideFactor);
-//            else if (order.getSide() == order.side.CLOSE) {
-//                // Need to get position and make reverse order.
-//            }
+            // todo add in close
 
             // Different types of orders, start with market.
-
             // Market
             if (order.orderType == OrderType.MARKET)  {
-//                System.out.printf("sf %d, qty %f, price: %f", sideFactor , order.getQuantity() ,
-//                        order.getTradeData().open[i]);
-                cash -= sideFactor * order.getQuantity() * order.getTradeData().open[i];
+                // todo Check for enough cash.
+                cash -= sideFactor * order.getQuantity() * order.getTradeData().open[index];
                 order.setStatus(Status.COMPLETE);
-                position.addTransaction(i, order.getTradeData(), order.getTradeData().open[i], order.getQuantity());
+                position.addTransaction(index, order.getTradeData(),
+                        order.getTradeData().open[index],
+                        order.getQuantity());
 
-                if (printout == true) {
+                if (printout) {
                     System.out.printf("Date: %s  %s: quantity %f, price %5.2f\n",
-                            order.tradeData.date[i], order.getSide(), order.getQuantity(),
-                            order.getTradeData().open[i]);
+                            order.tradeData.date[index], order.getSide(), order.getQuantity(),
+                            order.getTradeData().open[index]);
                 }
             }
         }
     }
 
      /**
-      * Ative open orders not completed or cancelled.
-      * @return Returns a list of open orders.
+      * Active open orders not completed or cancelled.
+      * @return List            Returns a list of open orders.
       */
     public Deque<Order> getOpenOrders () {
-        Deque<Order> openOrders = new LinkedList<Order>();
+        Deque<Order> openOrders = new LinkedList<>();
         for (Order order: orders) {
             if (order.status.ordinal() < 4) {
                 openOrders.add(order);
@@ -128,10 +124,10 @@ public class Broker {
      /**
       * Active open positions.
       * Positions are closed when they go back to zero.
-      * @return List of position objects.
+      * @return List            List of position objects.
       */
     public Deque<Position> getOpenPositions() {
-        Deque<Position> openPositions = new LinkedList<Position>();
+        Deque<Position> openPositions = new LinkedList<>();
         for (Position position: portfolio) {
             if (position.getQuantity() != 0) {
                 openPositions.add(position);
@@ -142,13 +138,10 @@ public class Broker {
 
      /**
       * get position for a given order. null if no position.
-      * @param order
-      * @return Position that matches to order.
+      * @param order            Get position associated with order.
+      * @return position        That matches to order.
       */
     public Position getPosition(Order order) {
-//        if (getOpenPositions().length == 0) {
-//            return null
-//        }
         for (Position position : getOpenPositions()) {
             if (position.getTradeData() == order.getTradeData()) {
                 return position;
@@ -157,7 +150,7 @@ public class Broker {
         return null;
     }
 
-    public Position createPosition (int i, Order order) {
+    public Position createPosition (Order order) {
         return new Position(index, order.getTradeData());
     }
 }

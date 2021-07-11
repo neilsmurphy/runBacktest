@@ -8,15 +8,13 @@ import java.util.List;
  * position objects created. It can provide open or closed or all positions.
  * It will provide  position event when positions are created or closed.
  * A position is closed when it equals zero. For instance, if you go from
- * @params positionId: Auto increment unique id number.
- * @params quantity:
  */
 public class Position {
     private static final AtomicInteger count = new AtomicInteger(0);
     public int positionId;
     double quantity = 0;
     public TradeData tradeData;
-    Deque<Transaction> transactions = new LinkedList<Transaction>();
+    Deque<Transaction> transactions = new LinkedList<>();
 
     Position (int i, TradeData td) {
         positionId = count.incrementAndGet();

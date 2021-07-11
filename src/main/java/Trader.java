@@ -7,7 +7,7 @@ public class Trader {
         // Start
         boolean printout = true;
         long begin = System.currentTimeMillis();
-        List<Feed> feeds = new ArrayList<Feed>();
+        List<Feed> feeds = new ArrayList<>();
 
         // Instantiate Classes
         feeds.add(new Feed("Apple Corp.", "AAPL"));
