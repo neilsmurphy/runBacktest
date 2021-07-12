@@ -1,8 +1,8 @@
 import java.util.concurrent.atomic.AtomicInteger;
 
-enum Status { CREATED, SUBMITTED, ACCEPTED, PARTIAL, COMPLETE, REJECTED, MARGIN, CANCELLED }
-enum Side { BUY, SELL, CLOSE }
 enum OrderType { MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT }
+enum Side { BUY, SELL, CLOSE }
+enum Status { CREATED, SUBMITTED, ACCEPTED, PARTIAL, COMPLETE, REJECTED, MARGIN, CANCELLED }
 
 public class Order {
     private static final AtomicInteger count = new AtomicInteger(0);
@@ -17,44 +17,44 @@ public class Order {
     public double limit;
     public double trailingPercent;
     public double trailingAmount;
-//    public double price; use market for now.
 
 
-    Order (int i, TradeData td, OrderType oType, double qty, Side sd) {
+    Order (int index, TradeData tradeData, OrderType orderType, double quantity, Side side) {
         orderId = count.incrementAndGet();
-        index = i;
-        tradeData = td;
-        orderType = oType;
-        quantity = qty;
-        side = sd;
+        this.index = index;
+        this.tradeData = tradeData;
+        this.orderType = orderType;
+        this.quantity = quantity;
+        this.side = side;
     }
 
-    Order (int i, TradeData td, OrderType oType, double qty, Side sd, double tp) {
+    Order (int index, TradeData tradeData, OrderType orderType, double quantity, Side side,
+           double trailingPercent) {
         orderId = count.incrementAndGet();
-        index = i;
-        tradeData = td;
-        orderType = oType;
-        quantity = qty;
-        side = sd;
-        trailingPercent = tp;
-        trailingAmount = 0;
+        this.index = index;
+        this.tradeData = tradeData;
+        this.orderType = orderType;
+        this.quantity = quantity;
+        this.side = side;
+        this.trailingPercent = trailingPercent;
+        this.trailingAmount = 0;
     }
 
     public Status getStatus () {
         return status;
     }
 
-    public void setStatus (Status st) {
-        status = st;
+    public void setStatus (Status status) {
+        this.status = status;
     }
 
-    public TradeData getTradeData () {
-        return tradeData;
-    }
+    public double getQuantity() { return quantity; }
 
     public Side getSide() {
         return side;
     }
 
-    public double getQuantity() { return quantity; }
+    public TradeData getTradeData () {
+        return tradeData;
+    }
 }
