@@ -27,7 +27,7 @@ public class Trader {
 
             // Trade
             strategy.runStrategy();
-            if (i < 15) {
+            if (i < 15000) {
                 System.out.printf("Symbol: %s, Close: %5.2f, Cash: %5.2f, Value: %5.2f %n",
                         thisFeed.symbol, iter.close[i], broker.getCash(), broker.getValue());
             }
