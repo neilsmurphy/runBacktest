@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class Trader {
@@ -11,7 +10,7 @@ public class Trader {
 
         // Instantiate Classes
         feeds.add(new Feed("Apple Corp.", "AAPL"));
-//        feeds.add(new Feed("Apple Corp.", "dev", "yyyy-MM-dd HH:mm:dd"));
+        // feeds.add(new Feed("Apple Corp.", "dev", "yyyy-MM-dd HH:mm:dd"));
         Broker broker = new Broker(20000, feeds, true);
         Strategy strategy = new Strategy(broker, feeds);
 

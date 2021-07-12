@@ -11,18 +11,17 @@ public class Strategy {
     double trailing_stop = 0.0;
     double trailing_stop_pct = 0.02;
 
-    public Strategy (Broker b, List<Feed> f) {
-        broker = b;
-        feeds = f;
+    public Strategy (Broker broker, List<Feed> feeds) {
+        this.broker = broker;
+        this.feeds = feeds;
     }
 
-    public void setIndex(int i) {
-        index = i;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void runStrategy () {
         for (Feed feed : feeds) {
-
             if (index == 5) {
                 Order buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
                 submitOrder(broker, buyOrder);
@@ -98,13 +97,13 @@ public class Strategy {
 //        }
     }
 
-    public Order createOrder(int index, TradeData feed, OrderType oType, double orderSize,
+    public Order createOrder(int index, TradeData feed, OrderType orderType, double orderSize,
                              Side side) {
-        return new Order(index, feed, oType, orderSize, side);
+        return new Order(index, feed, orderType, orderSize, side);
     }
 
-    public void submitOrder(Broker bk, Order ord) {
-        ord.setStatus(Status.SUBMITTED);
-        bk.receiveOrder(ord);
+    public void submitOrder(Broker broker, Order order) {
+        order.setStatus(Status.SUBMITTED);
+        broker.receiveOrder(order);
     }
 }

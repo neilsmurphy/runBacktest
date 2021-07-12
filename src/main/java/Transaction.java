@@ -2,7 +2,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Date;
 
 /**
- * Recoreds each individual transaction, which add up to orders and positions.
+ * Records each individual transaction, which add up to orders and positions.
  */
 public class Transaction {
     private static final AtomicInteger count = new AtomicInteger(0);
@@ -14,12 +14,12 @@ public class Transaction {
     public double quantity;
 
 
-    Transaction (int i, TradeData td, double prc, double qty) {
+    Transaction (int index, TradeData tradeData, double price, double quantity) {
         transactionId = count.incrementAndGet();
-        index = i;
-        tradeData = td;
-        date_transacted = tradeData.date[i];
-        price = prc;
-        quantity = qty;
+        this.index = index;
+        this.tradeData = tradeData;
+        date_transacted = tradeData.date[index];
+        this.price = price;
+        this.quantity = quantity;
     }
 }
