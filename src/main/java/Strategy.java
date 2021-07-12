@@ -6,32 +6,39 @@ public class Strategy {
     private int index = 0;
     int quantity = 0;
     int order_size = 100;
-    Order buyOrder = null;
     double sma = 0;
     int sma_period = 15;
     double trailing_stop = 0.0;
     double trailing_stop_pct = 0.02;
 
-    public Strategy (Broker b, List<Feed> f) {
-        broker = b;
-        feeds = f;
+    public Strategy (Broker broker, List<Feed> feeds) {
+        this.broker = broker;
+        this.feeds = feeds;
     }
 
-    public void setIndex(int i) {
-        index = i;
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public void runStrategy () {
         for (Feed feed : feeds) {
-            buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
-            submitOrder(broker, buyOrder);
-            System.out.println(buyOrder.orderId);
-//             TradeData data = feed.data;
-//                System.out.printf("From Strategy: %d %d", index, data.volume[index]);
-         }
+            if (index == 5) {
+                Order buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
+                submitOrder(broker, buyOrder);
+                System.out.printf("Index: %d, buy id: %d, Cash: %5.2f, Value %5.2f %n", index,
+                        buyOrder.orderId, broker.getCash(), broker.getValue());
+            } else if (index == 8) {
+                Order sellOrder = createOrder(index, feed.data, OrderType.MARKET, 10,
+                        Side.SELL);
+                submitOrder(broker, sellOrder);
+                System.out.printf("Index: %d, sell id: %d, Cash: %5.2f, Value %5.2f %n", index,
+                        sellOrder.orderId, broker.getCash(), broker.getValue());
+            }
+            broker.executeOrders();
+        }
 
 
-//        setBarCount = i;
+//        setIndex = i;
 //        if (i < sma_period) {
 //            return;
 //        }
@@ -90,14 +97,13 @@ public class Strategy {
 //        }
     }
 
-    public Order createOrder(int index, TradeData feed, OrderType oType, double orderSize,
+    public Order createOrder(int index, TradeData feed, OrderType orderType, double orderSize,
                              Side side) {
-        Order order = new Order(index, feed, oType, orderSize, side);
-        return order;
+        return new Order(index, feed, orderType, orderSize, side);
     }
 
-    public void submitOrder(Broker bk, Order ord) {
-        ord.setStatus(Status.SUBMITTED);
-        bk.receiveOrder(ord);
+    public void submitOrder(Broker broker, Order order) {
+        order.setStatus(Status.SUBMITTED);
+        broker.receiveOrder(order);
     }
 }
