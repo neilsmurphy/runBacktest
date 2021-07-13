@@ -8,15 +8,17 @@ public class Transaction {
     private static final AtomicInteger count = new AtomicInteger(0);
     public int transactionId;
     public int index;
+    public Order order;
     public TradeData tradeData;
     public Date date_transacted;
     public double price;
     public double quantity;
 
 
-    Transaction (int index, TradeData tradeData, double price, double quantity) {
+    Transaction (int index, Order order, TradeData tradeData, double price, double quantity) {
         transactionId = count.incrementAndGet();
         this.index = index;
+        this.order = order;
         this.tradeData = tradeData;
         date_transacted = tradeData.date[index];
         this.price = price;

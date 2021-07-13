@@ -46,17 +46,19 @@ public class Broker {
         this.cash += increment;
     }
 
-    public void setValue(double setval) {
-        this.value = setval;
+    public double getValue() {
+        double positionValues = 0.0;
+        for (Position position : getOpenPositions()) {
+            positionValues += position.getQuantity() * position.getLatestClose(index);
+        }
+        return (cash + positionValues);
     }
 
     public void adjValue(double increment) {
         this.value += increment;
     }
 
-    public double getValue() {
-        return this.value;
-    }
+
 
     public void receiveOrder(Order order) {
         order.setStatus(Status.ACCEPTED);
@@ -94,9 +96,9 @@ public class Broker {
                 // todo Check for enough cash.
                 cash -= sideFactor * order.getQuantity() * order.getTradeData().open[index];
                 order.setStatus(Status.COMPLETE);
-                position.addTransaction(index, order.getTradeData(),
+                position.addTransaction(index, order,
                         order.getTradeData().open[index],
-                        order.getQuantity());
+                        sideFactor * order.getQuantity());
 
                 if (printout) {
                     System.out.printf("Date: %s  %s: quantity %f, price %5.2f\n",
@@ -150,6 +152,19 @@ public class Broker {
         return null;
     }
 
+     /**
+      * get position for a given order. null if no position.
+      * @param feed            Get position associated with order.
+      * @return position        That matches to order.
+      */
+    public Position getPositionFeed(Feed feed) {
+        for (Position position : getOpenPositions()) {
+            if (position.getTradeData() == feed.data) {
+                return position;
+            }
+        }
+        return null;
+    }
     public Position createPosition (Order order) {
         return new Position(index, order.getTradeData());
     }

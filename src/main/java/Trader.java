@@ -23,6 +23,7 @@ public class Trader {
             // Pre-Trade
             broker.setIndex(i);
             strategy.setIndex(i);
+            broker.executeOrders();
 
 
             // Trade
