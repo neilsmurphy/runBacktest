@@ -10,4 +10,7 @@ I intend to move this towards:
 2. Binance live integration,
 3. Tick data technical analysis. 
 
-Thanks!
+Thanks!  
+  
+Neil Murphy  
+[RunBacktest](http://runbacktest.com/)
