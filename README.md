@@ -1,5 +1,4 @@
 # runBacktest
-Test Maven
 
 A backtester motivated by Backtrader and Lumibot. 
 
