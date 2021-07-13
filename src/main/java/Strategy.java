@@ -5,7 +5,7 @@ public class Strategy {
     public List<Feed> feeds;
     private int index = 0;
     int quantity = 0;
-    int order_size = 100;
+    int orderSize = 100;
     double sma = 0;
     int sma_period = 15;
     double trailing_stop = 0.0;
@@ -22,56 +22,46 @@ public class Strategy {
 
     public void runStrategy () {
         for (Feed feed : feeds) {
-            if (index == 5) {
-                Order buyOrder = createOrder(index, feed.data, OrderType.MARKET, 10, Side.BUY);
+            if (index < sma_period) {
+                return;
+            }
+
+            // Signal. Simple moving average.
+            double sma_sum = 0.0;
+            for (int n = index - sma_period; n < index; n++) {
+                    sma_sum += feed.data.close[n];
+            }
+            sma = sma_sum / sma_period;
+            {System.out.printf("close: %f, sma: %f\n", feed.data.close[index], sma);}
+
+            // Create Orders.
+            // Create a buy order if close crosses up over sma.
+            Position feedPosition = broker.getPositionFeed(feed);
+
+            double currQuantity = 0.0;
+            if (feedPosition != null) {
+                currQuantity = feedPosition.getQuantity();
+            }
+
+            if (feed.data.close[index - 1] < sma && feed.data.close[index] >= sma && currQuantity == 0.0) {
+                orderSize = (int) ((broker.getValue() * 0.95) / feed.data.close[index]);
+                Order buyOrder = createOrder(index, feed.data, OrderType.MARKET, orderSize,
+                        Side.BUY);
                 submitOrder(broker, buyOrder);
                 System.out.printf("Index: %d, buy id: %d, Cash: %5.2f, Value %5.2f %n", index,
                         buyOrder.orderId, broker.getCash(), broker.getValue());
-            } else if (index == 8) {
-                Order sellOrder = createOrder(index, feed.data, OrderType.MARKET, 10,
+            } else if (feed.data.close[index - 1] > sma && feed.data.close[index] <= sma && currQuantity != 0) {
+                Order sellOrder = createOrder(index, feed.data, OrderType.MARKET, currQuantity,
                         Side.SELL);
                 submitOrder(broker, sellOrder);
                 System.out.printf("Index: %d, sell id: %d, Cash: %5.2f, Value %5.2f %n", index,
                         sellOrder.orderId, broker.getCash(), broker.getValue());
             }
-            broker.executeOrders();
         }
 
 
-//        setIndex = i;
-//        if (i < sma_period) {
-//            return;
-//        }
-//        // Execute orders transactions.
-//        if (buyOrder != null) {
-//                broker.executeOrders(i);
-//        }
-//
-//        // Notify orders transactions.
-//
-//        // Print cash and market values
-//        broker.setValue(broker.getCash() + price.close[i] * quantity);
-//        if (printout == true) {
-//                System.out.printf("Date: %s, Cash: %10.2f  Value: %10.2f %n", price.date[i], broker.getCash(), broker.getValue());
-//        }
-//
-//        // Strategy
-//        double sma_sum = 0.0;
-//        for (int n = i - sma_period; n < i; n++) {
-//                sma_sum += price.close[n];
-//        }
-//        sma = sma_sum / sma_period;
-//        if (printout == true) {
-//                System.out.printf("close: %f, sma: %f\n", price.close[i], sma);
-//        }
-//
-//        // Create Orders.
-//        // Create a buy order if close crosses up over sma.
-//        if (price.close[i - 1] < sma && price.close[i] >= sma && quantity == 0) {
-//                order_size = (int) ((broker.getValue() * 0.95) / price.close[i]);
-//                buyOrder = broker.createOrder(price, 'market', order_size, 'buy');
-//        }
-//
+
+
 //        if (quantity == 0) {
 //                trailing_stop = 0;
 //        } else if (quantity > 0) {
@@ -105,5 +95,9 @@ public class Strategy {
     public void submitOrder(Broker broker, Order order) {
         order.setStatus(Status.SUBMITTED);
         broker.receiveOrder(order);
+    }
+
+    public void cancelOrder(Order order) {
+        order.cancel();
     }
 }

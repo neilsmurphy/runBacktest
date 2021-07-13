@@ -22,8 +22,11 @@ public class Position {
         this.tradeData = tradeData;
     }
 
-    public void addTransaction (int index, TradeData tradeData, double price, double quantity) {
-        transactions.add(new Transaction(index, tradeData, price, quantity));
+    public void addTransaction (int index, Order order, double price,
+                                double quantity) {
+        Transaction newTransaction = new Transaction(index, order, order.tradeData, price, quantity);
+        transactions.add(newTransaction);
+        order.addTransaction(newTransaction);
         this.quantity += quantity;
     }
 
@@ -33,6 +36,10 @@ public class Position {
 
     public double getQuantity() {
         return quantity;
+    }
+
+    public double getLatestClose (int index) {
+        return getTradeData().close[index];
     }
 }
 

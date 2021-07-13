@@ -1,3 +1,5 @@
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 enum OrderType { MARKET, LIMIT, STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT }
@@ -17,6 +19,7 @@ public class Order {
     public double limit;
     public double trailingPercent;
     public double trailingAmount;
+    Deque<Transaction> transactions = new LinkedList<>();
 
 
     Order (int index, TradeData tradeData, OrderType orderType, double quantity, Side side) {
@@ -46,6 +49,14 @@ public class Order {
 
     public void setStatus (Status status) {
         this.status = status;
+    }
+
+    public void cancel() {
+        this.status = Status.CANCELLED;
+    }
+
+    public void addTransaction(Transaction transaction) {
+       this.transactions.add(transaction);
     }
 
     public double getQuantity() { return quantity; }
