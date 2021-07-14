@@ -29,8 +29,10 @@ public class Trader {
             // Trade
             strategy.runStrategy();
             if (i < 15000) {
-                System.out.printf("Symbol: %s, Close: %5.2f, Cash: %5.2f, Value: %5.2f %n",
-                        thisFeed.symbol, iter.close[i], broker.getCash(), broker.getValue());
+                System.out.printf("Symbol: %s, Date: %s, Open: %5.2f, High: %5.2f, Low: %5" +
+                                ".2f, Close: %5.2f, Cash: %5.2f, Value: %5.2f %n",
+                        thisFeed.symbol, iter.date[i], iter.open[i], iter.high[i], iter.low[i],
+                        iter.close[i], broker.getCash(), broker.getValue());
             }
 
             // Post-Trade

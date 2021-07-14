@@ -80,6 +80,10 @@ public class Broker {
                 portfolio.add(position);
             }
 
+            if (order.valid != null && order.valid.compareTo(order.tradeData.date[index]) >= 0) {
+                order.setStatus(Status.CANCELLED);
+            }
+
             int sideFactor;
             if  (order.getSide() == Side.BUY) {
                 sideFactor = 1;
@@ -91,20 +95,36 @@ public class Broker {
             // todo add in close
 
             // Different types of orders, start with market.
-            // Market
-            if (order.orderType == OrderType.MARKET)  {
-                // todo Check for enough cash.
-                cash -= sideFactor * order.getQuantity() * order.getTradeData().open[index];
-                order.setStatus(Status.COMPLETE);
-                position.addTransaction(index, order,
-                        order.getTradeData().open[index],
-                        sideFactor * order.getQuantity());
+            double tradePrice = switch(order.orderType) {
+                // Market
+                case MARKET:
+                    yield order.getTradeData().open[index];
 
-                if (printout) {
-                    System.out.printf("Date: %s  %s: quantity %f, price %5.2f\n",
-                            order.tradeData.date[index], order.getSide(), order.getQuantity(),
-                            order.getTradeData().open[index]);
-                }
+                case LIMIT:
+                    if (order.getTradeData().open[index] < order.price) {
+                        yield order.getTradeData().open[index];
+                    } else if (order.getTradeData().low[index] < order.price) {
+                        yield order.price;
+                    } else {
+                        yield 0;
+                    }
+
+                case STOP, STOP_LIMIT, STOP_TRAIL, STOP_TRAIL_LIMIT:
+                    yield 0;
+
+            };
+            if (tradePrice == 0) {
+                return;
+            }
+
+            cash -= sideFactor * order.getQuantity() * tradePrice;
+            order.setStatus(Status.COMPLETE);
+            position.addTransaction(index, order, tradePrice,sideFactor * order.getQuantity());
+
+            if (printout) {
+                System.out.printf("TRANSACTION: Date: %s  %s: quantity %f, price %5.2f\n",
+                        order.tradeData.date[index], order.getSide(), order.getQuantity(),
+                        order.getTradeData().open[index]);
             }
         }
     }
