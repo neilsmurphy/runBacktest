@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.List;
 
 public class Strategy {
@@ -22,7 +23,10 @@ public class Strategy {
 
     public void runStrategy () {
         for (Feed feed : feeds) {
+            int valid = 10;
             if (index < sma_period) {
+                return;
+            } else if (index > (feed.data.close.length - valid)) {
                 return;
             }
 
@@ -32,7 +36,7 @@ public class Strategy {
                     sma_sum += feed.data.close[n];
             }
             sma = sma_sum / sma_period;
-            {System.out.printf("close: %f, sma: %f\n", feed.data.close[index], sma);}
+//            {System.out.printf("close: %f, sma: %f\n", feed.data.close[index], sma);}
 
             // Create Orders.
             // Create a buy order if close crosses up over sma.
@@ -45,13 +49,17 @@ public class Strategy {
 
             if (feed.data.close[index - 1] < sma && feed.data.close[index] >= sma && currQuantity == 0.0) {
                 orderSize = (int) ((broker.getValue() * 0.95) / feed.data.close[index]);
-                Order buyOrder = createOrder(index, feed.data, OrderType.MARKET, orderSize,
-                        Side.BUY);
+                double price = feed.data.close[index] * .995;
+                Order buyOrder = new Order(index, feed.data, OrderType.LIMIT, price, orderSize, Side.BUY,
+                        feed.data.date[index + valid]);
                 submitOrder(broker, buyOrder);
-                System.out.printf("Index: %d, buy id: %d, Cash: %5.2f, Value %5.2f %n", index,
-                        buyOrder.orderId, broker.getCash(), broker.getValue());
+                System.out.printf(
+                        "BUY ORDER PLACED: %d, buy id: %d, limit price: %5.2f, quantity: %2d, " +
+                                "Cash: %5.2f, Value %5.2f %n",
+                        index, buyOrder.orderId, price, orderSize, broker.getCash(), broker.getValue());
+
             } else if (feed.data.close[index - 1] > sma && feed.data.close[index] <= sma && currQuantity != 0) {
-                Order sellOrder = createOrder(index, feed.data, OrderType.MARKET, currQuantity,
+                Order sellOrder = new Order(index, feed.data, OrderType.MARKET, currQuantity,
                         Side.SELL);
                 submitOrder(broker, sellOrder);
                 System.out.printf("Index: %d, sell id: %d, Cash: %5.2f, Value %5.2f %n", index,

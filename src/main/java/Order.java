@@ -1,3 +1,4 @@
+import java.util.Date;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,6 +20,7 @@ public class Order {
     public double limit;
     public double trailingPercent;
     public double trailingAmount;
+    public Date valid = null;
     Deque<Transaction> transactions = new LinkedList<>();
 
 
@@ -31,14 +33,27 @@ public class Order {
         this.side = side;
     }
 
-    Order (int index, TradeData tradeData, OrderType orderType, double quantity, Side side,
-           double trailingPercent) {
+    Order (int index, TradeData tradeData, OrderType orderType, double price, double quantity,
+           Side side,
+            Date valid) {
+        orderId = count.incrementAndGet();
+        this.index = index;
+        this.tradeData = tradeData;
+        this.orderType = orderType;
+        this.price = price;
+        this.quantity = quantity;
+        this.side = side;
+        this.valid = valid;
+    }
+
+    Order (int index, TradeData tradeData, OrderType orderType, double quantity, Side side, Date valid, double trailingPercent) {
         orderId = count.incrementAndGet();
         this.index = index;
         this.tradeData = tradeData;
         this.orderType = orderType;
         this.quantity = quantity;
         this.side = side;
+        this.valid = valid;
         this.trailingPercent = trailingPercent;
         this.trailingAmount = 0;
     }
