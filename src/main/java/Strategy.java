@@ -1,4 +1,4 @@
-import java.util.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class Strategy {
@@ -46,7 +46,7 @@ public class Strategy {
             if (feedPosition != null) {
                 currQuantity = feedPosition.getQuantity();
             }
-
+            SimpleDateFormat dateFor = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             if (feed.data.close[index - 1] < sma && feed.data.close[index] >= sma && currQuantity == 0.0) {
                 orderSize = (int) ((broker.getValue() * 0.95) / feed.data.close[index]);
                 double price = feed.data.close[index] * .995;
@@ -54,15 +54,18 @@ public class Strategy {
                         feed.data.date[index + valid]);
                 submitOrder(broker, buyOrder);
                 System.out.printf(
-                        "BUY ORDER PLACED: %d, buy id: %d, limit price: %5.2f, quantity: %2d, " +
+                        "BUY ORDER PLACED: %s %d, buy id: %d, limit price: %5.2f, quantity: %2d, " +
                                 "Cash: %5.2f, Value %5.2f %n",
-                        index, buyOrder.orderId, price, orderSize, broker.getCash(), broker.getValue());
+                        dateFor.format(feed.data.date[index]), index, buyOrder.orderId
+                        , price, orderSize,
+                        broker.getCash(), broker.getValue());
 
             } else if (feed.data.close[index - 1] > sma && feed.data.close[index] <= sma && currQuantity != 0) {
                 Order sellOrder = new Order(index, feed.data, OrderType.MARKET, currQuantity,
                         Side.SELL);
                 submitOrder(broker, sellOrder);
-                System.out.printf("Index: %d, sell id: %d, Cash: %5.2f, Value %5.2f %n", index,
+                System.out.printf("Index: %s %d, sell id: %d, Cash: %5.2f, Value %5.2f %n",
+                        dateFor.format(feed.data.date[index]), index,
                         sellOrder.orderId, broker.getCash(), broker.getValue());
             }
         }
