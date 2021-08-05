@@ -7,7 +7,7 @@ public class TradeData {
     double[] high;
     double[] low;
     double[] close;
-    int[] volume;
+    double[] volume;
 
     TradeData(int s) {
         size = s;
@@ -16,6 +16,6 @@ public class TradeData {
         this.high = new double[size];
         this.low = new double[size];
         this.close = new double[size];
-        this.volume = new int[size];
+        this.volume = new double[size];
     }
 }

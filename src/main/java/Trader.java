@@ -9,8 +9,9 @@ public class Trader {
         List<Feed> feeds = new ArrayList<>();
 
         // Instantiate Classes
-        feeds.add(new Feed("Apple Corp.", "AAPL"));
-        // feeds.add(new Feed("Apple Corp.", "dev", "yyyy-MM-dd HH:mm:dd"));
+//        feeds.add(new FeedCSV("Apple Corp.", "dev", "yyyy-MM-dd HH:mm:dd").getFeed());
+//        feeds.add(new FeedCSV("ETHUSDT", "ETH_USDT"));
+        feeds.add(new FeedInfluxDB().getFeed());
         Broker broker = new Broker(20000, feeds, true);
         Strategy strategy = new Strategy(broker, feeds);
 
